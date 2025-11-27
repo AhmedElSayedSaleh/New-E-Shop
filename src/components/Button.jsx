@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon } from "./";
+import { Icon } from ".";
 
 const Button = ({ children, secondBtn, thirdBtn, onClick, type, style }) => {
   return (

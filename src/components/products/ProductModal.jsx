@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "../";
+import { Button } from "..";
 import { addToCart } from "../../store/slices/CartSlice";
-import { ColorSelect } from "./";
+import { ColorSelect } from ".";
 import { ToastContainer, toast } from "react-toastify";
 import { auth } from "../../firebase/firebase";
 

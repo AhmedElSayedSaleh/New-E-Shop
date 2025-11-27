@@ -4,7 +4,8 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { BlackLogo, WhiteLogo } from "../assets/images";
 import { links } from "../utils/constants";
 import { Icon } from "../components";
-import { useSelector } from "react-redux";
+import { fetchCategories } from "../store/slices/CategoriesSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { auth } from "../firebase/firebase";
 import { signOut } from "firebase/auth";
 
@@ -17,7 +18,13 @@ const Header = () => {
   const mobileMenuRef = useRef(null);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const user = useSelector((state) => state.userAuth);
+  const categories = useSelector((state) => state.categories.data);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const stickyHeaderFunc = () => {
     window.addEventListener("scroll", () => {
@@ -99,9 +106,8 @@ const Header = () => {
 
   return (
     <header
-      className={`pt-3 border-bottom ${
-        pathname === "/" ? "home-nav fixed-top border-bottom-0" : ""
-      }`}
+      className={`pt-3 border-bottom ${pathname === "/" ? "home-nav fixed-top border-bottom-0" : ""
+        }`}
       ref={headerRef}
       style={{ height: "6rem" }}
     >
@@ -112,7 +118,7 @@ const Header = () => {
               <div className="col-6 col-lg-3 text-start menu__logo">
                 <Link
                   to="/"
-                  //  onClick={closeMenu}
+                //  onClick={closeMenu}
                 >
                   <img
                     src={pathname === "/" ? WhiteLogo : BlackLogo}
@@ -124,23 +130,39 @@ const Header = () => {
                 </Link>
               </div>
               <ul className="col-lg-6 mb-0 menu__links">
-                {links.map((link) => {
-                  const { id, text, url } = link;
-                  return (
-                    <li key={id}>
+                {categories && categories.length > 0 ? (
+                  categories.map((category) => (
+                    <li key={category.id}>
                       <NavLink
-                        to={url}
+                        to={`/category/${category.id}`}
                         className="px-5 menu__link"
                         style={({ isActive }) =>
                           isActive ? { color: "#fbb03b" } : null
                         }
-                        // activeStyle={{ color: "#fbb03b" }}
                       >
-                        {text}
+                        {category.name}
                       </NavLink>
                     </li>
-                  );
-                })}
+                  ))
+                ) : (
+                  // Fallback to static links if no categories fetched yet
+                  links.map((link) => {
+                    const { id, text, url } = link;
+                    return (
+                      <li key={id}>
+                        <NavLink
+                          to={url}
+                          className="px-5 menu__link"
+                          style={({ isActive }) =>
+                            isActive ? { color: "#fbb03b" } : null
+                          }
+                        >
+                          {text}
+                        </NavLink>
+                      </li>
+                    );
+                  })
+                )}
               </ul>
               <div className="col-6 col-lg-3 d-flex justify-content-end">
                 <Icon
@@ -148,12 +170,12 @@ const Header = () => {
                   size={"3rem"}
                   className={"mx-3 mx-lg-4 menu__icon"}
                   disableFill
-                  // onClick={closeMenu}
+                // onClick={closeMenu}
                 />
                 <Link
                   to="/cart"
                   className=" position-relative"
-                  // onClick={closeMenu}
+                // onClick={closeMenu}
                 >
                   <Icon
                     icon="cart"
@@ -173,9 +195,8 @@ const Header = () => {
                         <img
                           src={user.photoURL}
                           alt="user"
-                          className={`rounded-circle  ${
-                            user.isAuth ? "menu__icon--avatar" : null
-                          }`}
+                          className={`rounded-circle  ${user.isAuth ? "menu__icon--avatar" : null
+                            }`}
                           role="button"
                           style={{ width: "100%" }}
                         />
@@ -184,9 +205,8 @@ const Header = () => {
                       <Icon
                         icon="avatar"
                         size={"3rem"}
-                        className={`mx-3 mx-lg-4 menu__icon menu__icon--avatar--mobile ${
-                          user.isAuth ? "menu__icon--avatar" : null
-                        }`}
+                        className={`mx-3 mx-lg-4 menu__icon menu__icon--avatar--mobile ${user.isAuth ? "menu__icon--avatar" : null
+                          }`}
                         disableFill
                       />
                     )}
@@ -254,8 +274,8 @@ const Header = () => {
                     style={({ isActive }) =>
                       isActive ? { color: "#fbb03b" } : null
                     }
-                    // activeStyle={{ color: "#fbb03b" }}
-                    // onClick={closeMenu}
+                  // activeStyle={{ color: "#fbb03b" }}
+                  // onClick={closeMenu}
                   >
                     {text}
                   </NavLink>
@@ -274,9 +294,8 @@ const Header = () => {
                     <img
                       src={user.photoURL}
                       alt="user"
-                      className={`rounded-circle mx-3 mx-lg-4 ${
-                        user.isAuth ? "menu__icon--avatar" : null
-                      }`}
+                      className={`rounded-circle mx-3 mx-lg-4 ${user.isAuth ? "menu__icon--avatar" : null
+                        }`}
                       role="button"
                       style={{ width: "100%" }}
                     />
@@ -285,9 +304,8 @@ const Header = () => {
                   <Icon
                     icon="avatar"
                     size={"3rem"}
-                    className={`mx-3 mx-lg-4 menu__icon ${
-                      user.isAuth ? "menu__icon--avatar" : null
-                    }`}
+                    className={`mx-3 mx-lg-4 menu__icon ${user.isAuth ? "menu__icon--avatar" : null
+                      }`}
                     disableFill
                   />
                 )}

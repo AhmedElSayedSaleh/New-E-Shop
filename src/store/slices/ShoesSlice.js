@@ -7,7 +7,7 @@ export const fetchShoes = createAsyncThunk(
     const { rejectWithValue } = thunkAPI;
     try {
       const { data } = await axios.get(
-        "https://mocki.io/v1/9acd7edd-917e-4734-971d-b003ab402bce"
+        "https://mocki.io/v1/a5793545-b761-4c37-b66b-4c06ea96a430"
       );
       return data;
     } catch (error) {

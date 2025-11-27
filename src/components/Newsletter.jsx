@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Input } from "./";
+import { Button, Input } from ".";
 import { newsletterBg } from "../assets/images";
 
 const Newsletter = () => {

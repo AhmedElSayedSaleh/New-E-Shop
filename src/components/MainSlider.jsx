@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 //   DotGroup,
 //   CarouselContext,
 // } from "pure-react-carousel";
-import { Icon } from "./";
+import { Icon } from ".";
 
 import {
   ImgSlider1,

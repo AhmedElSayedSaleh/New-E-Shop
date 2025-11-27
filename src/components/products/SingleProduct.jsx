@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 // components
-import { Icon } from "../";
-import { ProductModal, HeadNotice } from "./";
+import { Icon } from "..";
+import { ProductModal, HeadNotice } from ".";
 
 const SingleProduct = ({ product, modalHandle, modalView }) => {
   return (

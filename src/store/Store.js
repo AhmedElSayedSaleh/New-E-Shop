@@ -34,6 +34,7 @@ import ProductsSlice from "./slices/ProductsSlice";
 import BagsSlice from "./slices/BagsSlice";
 import ShoesSlice from "./slices/ShoesSlice";
 import JewelrySlice from "./slices/JewelrySlice";
+import CategoriesSlice from "./slices/CategoriesSlice";
 import CartSlice from "./slices/CartSlice";
 import AuthSlice from "./slices/AuthSlice";
 import ErrorAlertSlice from "./slices/ErrorAlertSlice";
@@ -44,6 +45,7 @@ const store = configureStore({
     bagsProducts: BagsSlice,
     shoesProducts: ShoesSlice,
     jewelryProducts: JewelrySlice,
+    categories: CategoriesSlice,
     cart: CartSlice,
     userAuth: AuthSlice,
     errorAlert: ErrorAlertSlice,

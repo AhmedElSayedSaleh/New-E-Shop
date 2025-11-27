@@ -15,6 +15,7 @@ import {
   Login,
   Payment,
   ProtectedRoute,
+  CategoryPage,
 } from "../pages";
 import { ScrollToTop } from "../components";
 
@@ -30,6 +31,7 @@ const Hero = () => {
             <Route path={"/bags"} element={<Bags />} />
             <Route path={"/shoes"} element={<Shoes />} />
             <Route path={"/jewelry"} element={<Jewelry />} />
+            <Route path={"/category/:id"} element={<CategoryPage />} />
             <Route path={"/products"} element={<ProductsList />} />
             <Route path={"/product/:id"} element={<ProductDetails />} />
             <Route path={"/cart"} element={<Cart />} />

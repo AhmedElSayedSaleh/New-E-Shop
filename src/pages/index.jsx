@@ -1,0 +1,15 @@
+export { default as Home } from "./Home";
+export { default as Bags } from "./Bags";
+export { default as Shoes } from "./Shoes";
+export { default as Jewelry } from "./Jewelry";
+export { default as ProductDetails } from "./ProductDetails";
+export { default as ProductsList } from "./ProductsList";
+export { default as NotFound } from "./NotFound";
+export { default as Cart } from "./cart/Cart";
+export { default as Checkout } from "./cart/Checkout";
+export { default as Payment } from "./cart/Payment";
+export { default as Login } from "./login/Login";
+export { default as Register } from "./register/Register";
+export { default as Password } from "./password/Password";
+export { default as ProtectedRoute } from "./ProtectedRoute";
+export { default as CategoryPage } from "./CategoryPage";
