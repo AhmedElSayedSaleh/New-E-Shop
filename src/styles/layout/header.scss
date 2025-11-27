@@ -20,6 +20,13 @@ header {
   z-index: 100;
   transition: $main-transition;
   color: $third-color;
+
+  // Responsive header height
+  @include rwd-df-down(sm) {
+    height: 5rem !important;
+    padding-top: 0.5rem !important;
+  }
+
   a {
     color: $third-color;
     // transition: $main-transition;
@@ -33,13 +40,33 @@ header {
       a {
         #logo {
           transition: $main-transition;
+          max-width: 4rem;
+          @include rwd-df-down(sm) {
+            max-width: 3rem;
+          }
         }
         // color: $fifth-color;
+        font-size: 2rem;
+        font-weight: 700;
+
+        @include rwd-df-down(sm) {
+          font-size: 1.5rem;
+        }
 
         span {
           color: $first-color;
           padding-#{$start}: 1.5rem;
+          @include rwd-df-down(sm) {
+            padding-#{$start}: 0.5rem;
+          }
         }
+      }
+    }
+
+    // Hide desktop navigation on mobile
+    .col-lg-6 {
+      @include rwd-df-down(md) {
+        display: none !important;
       }
     }
 
@@ -71,6 +98,14 @@ header {
       transition: $main-transition;
       // color: $fifth-color;
 
+      // Responsive icon sizes
+      @include rwd-df-down(sm) {
+        padding: 0.3rem;
+        font-size: 2rem !important;
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+      }
+
       &--avatar {
         //onlogin=================>>>>>>>>>>>>>>
         border: 0.2rem solid #fff;
@@ -98,6 +133,9 @@ header {
         //filter: drop-shadow(4px 4px 1px rgba($fifth-color, 0.4));
         //box-shadow: $inner-shadow;
         transform: scale(1.2);
+        @include rwd-df-down(sm) {
+          transform: scale(1.1);
+        }
       }
     }
 
@@ -114,6 +152,14 @@ header {
       font-weight: 600;
       text-align: center;
       line-height: 2rem;
+
+      @include rwd-df-down(sm) {
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 0.9rem;
+        line-height: 1.5rem;
+        #{$end}: 5%;
+      }
     }
 
     &__dropdown {
@@ -132,8 +178,38 @@ header {
     z-index: 9999;
     transition: $main-transition;
     overflow: auto;
+    padding: 0 1.5rem;
+
+    @include rwd-df-down(sm) {
+      padding: 0 1rem;
+    }
+
     &--active {
       height: calc(100vh - 6rem);
+      @include rwd-df-down(sm) {
+        height: calc(100vh - 5rem);
+      }
+    }
+
+    ul {
+      li {
+        margin: 1.5rem 0;
+        @include rwd-df-down(sm) {
+          margin: 1rem 0;
+        }
+      }
+
+      .h4 {
+        @include rwd-df-down(sm) {
+          font-size: 1.3rem;
+        }
+      }
+
+      .h5 {
+        @include rwd-df-down(sm) {
+          font-size: 1.1rem;
+        }
+      }
     }
   }
 }

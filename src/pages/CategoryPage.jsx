@@ -75,11 +75,8 @@ const CategoryPage = () => {
           </div>
         </div>
       </div>
-      <div className="row">
-        <Newsletter />
-      </div>
       {storeTotalPages > 1 && (
-        <div className="row mt-4">
+        <div className="row mt-5 mb-4">
           <div className="col-12 d-flex justify-content-center">
             <Pagination
               currentPage={currentPage}
@@ -89,6 +86,9 @@ const CategoryPage = () => {
           </div>
         </div>
       )}
+      <div className="row">
+        <Newsletter />
+      </div>
     </div>
   );
 };

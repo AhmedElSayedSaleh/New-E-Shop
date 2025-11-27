@@ -1,5 +1,10 @@
 import React from "react";
-import { ChooseUs, MainSlider, Newsletter } from "../components";
+import {
+  ChooseUs,
+  MainSlider,
+  Newsletter,
+  FeaturedProducts,
+} from "../components";
 
 const Home = () => {
   return (
@@ -12,6 +17,12 @@ const Home = () => {
           <div className="row">
             <ChooseUs />
           </div>
+        </div>
+
+        {/* Featured Products Section */}
+        <FeaturedProducts />
+
+        <div className={"container"}>
           <div className="row">
             <Newsletter />
           </div>

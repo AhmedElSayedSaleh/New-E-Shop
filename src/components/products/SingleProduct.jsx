@@ -16,6 +16,22 @@ const SingleProduct = ({ product, modalHandle, modalView }) => {
               className={"w-100 h-100 single-product__head__img"}
               src={product.primaryImage}
               alt={product.name}
+              onError={(e) => {
+                // If the resized image fails to load, try the original URL
+                if (
+                  e.target.src !== "https://via.placeholder.com/300" &&
+                  !e.target.dataset.fallbackAttempted
+                ) {
+                  e.target.dataset.fallbackAttempted = "true";
+                  // Remove size suffix if it exists
+                  const originalSrc = e.target.src.replace(/-\d+x\d+(\.\w+)$/, "$1");
+                  if (originalSrc !== e.target.src) {
+                    e.target.src = originalSrc;
+                  } else {
+                    e.target.src = "https://via.placeholder.com/300";
+                  }
+                }
+              }}
             />
           </Link>
           <HeadNotice discount={product.discount}>

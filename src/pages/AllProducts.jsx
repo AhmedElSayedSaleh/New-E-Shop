@@ -16,6 +16,8 @@ const AllProducts = () => {
   const [modalView, setModalView] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(10000);
   const productsPerPage = 12;
 
   const productsList = useSelector((state) => state.allProducts);
@@ -35,16 +37,35 @@ const AllProducts = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    // fetch page from server with optional category filter
-    const params = { per_page: productsPerPage, page: currentPage };
+    // Fetch all products with category filter (fetchAll for price range calculation)
+    const params = { fetchAll: true, per_page: 100 };
     if (selectedCategory !== "all") params.category = selectedCategory;
     dispatch(fetchProducts(params));
-  }, [dispatch, currentPage, selectedCategory]);
+  }, [dispatch, selectedCategory]);
 
   useEffect(() => {
-    // data is expected to be the current page items (already normalized by slice)
+    // Calculate min and max prices from all products
+    if (data && Array.isArray(data) && data.length > 0) {
+      const prices = data.map((product) =>
+        parseFloat(product.currentPrice || product.price || 0) || 0
+      ).filter(price => price > 0);
+
+      if (prices.length > 0) {
+        const min = Math.floor(Math.min(...prices));
+        const max = Math.ceil(Math.max(...prices));
+        setMinPrice(min);
+        setMaxPrice(max);
+        // Set initial price range only on first load
+        if (priceRange[0] === 0 && priceRange[1] === 10000) {
+          setPriceRange([min, max]);
+        }
+      }
+    }
+  }, [data]);
+
+  useEffect(() => {
+    // Apply price filter on all products
     if (data && Array.isArray(data)) {
-      // apply client-side price filter on the page
       let filtered = data.filter((product) => {
         const price =
           parseFloat(product.currentPrice || product.price || 0) || 0;
@@ -52,6 +73,8 @@ const AllProducts = () => {
       });
 
       setFilteredProducts(filtered);
+      // Reset to first page when filter changes
+      setCurrentPage(1);
     } else {
       setFilteredProducts([]);
     }
@@ -63,15 +86,18 @@ const AllProducts = () => {
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
+    setCurrentPage(1); // Reset to first page on category change
   };
 
   const handlePriceChange = (values) => {
     setPriceRange(values);
   };
 
-  // with server-side pagination the store provides total pages
-  const currentProducts = filteredProducts;
-  const totalPages = storeTotalPages || 1;
+  // Client-side pagination based on filtered products
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const startIndex = (currentPage - 1) * productsPerPage;
+  const endIndex = startIndex + productsPerPage;
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -177,9 +203,9 @@ const AllProducts = () => {
                       </div>
                       <Slider
                         range
-                        min={0}
-                        max={10000}
-                        step={100}
+                        min={minPrice}
+                        max={maxPrice}
+                        step={Math.max(1, Math.floor((maxPrice - minPrice) / 100))}
                         value={priceRange}
                         onChange={handlePriceChange}
                         railStyle={{
@@ -223,7 +249,12 @@ const AllProducts = () => {
                     ?.name || "المنتجات"}
             </h2>
             <p className="text-muted">
-              {total || filteredProducts.length} منتج
+              {filteredProducts.length} منتج
+              {filteredProducts.length !== data?.length && data?.length > 0 && (
+                <span className="ms-2">
+                  (من أصل {data.length})
+                </span>
+              )}
             </p>
           </div>
 
@@ -253,11 +284,13 @@ const AllProducts = () => {
           </div>
 
           {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+            <div className="mt-5 mb-4">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
           )}
         </div>
       </div>

@@ -70,7 +70,7 @@ const Cart = () => {
                         </div>
                       </td>
                       <td className="my-auto grid-price">
-                        ${item.totalPrice?.toFixed(2)}
+                        ${parseFloat(item.totalPrice || 0).toFixed(2)}
                       </td>
                       <td className="my-auto grid-delete">
                         <div className="">
@@ -118,7 +118,7 @@ const Cart = () => {
               <div className="col-6 col-md-3 col-lg-2 mt-3 mt-lg-0 d-flex justify-content-between cart__check__total">
                 <p className=" mb-0 cart__check__total__title">Total cost</p>
                 <p className=" mb-0 cart__check__total__value">
-                  ${totalCost.toFixed(2)}
+                  ${parseFloat(totalCost || 0).toFixed(2)}
                 </p>
               </div>
               <div className="col-12 col-md-6 col-lg-2 mt-3 mt-lg-0 text-center">

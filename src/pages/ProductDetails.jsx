@@ -135,16 +135,61 @@ const ProductDetails = () => {
                     <div className="col-md-3">
                       <div className="carousel__dots">
                         <Dot slide={0}>
-                          <Image src={currentProduct.primaryImage} />
+                          <Image
+                            src={currentProduct.primaryImage}
+                            onError={(e) => {
+                              if (!e.target.dataset.fallbackAttempted) {
+                                e.target.dataset.fallbackAttempted = "true";
+                                const original = e.target.src.replace(
+                                  /-\d+x\d+(\.\w+)$/,
+                                  "$1"
+                                );
+                                e.target.src =
+                                  original !== e.target.src
+                                    ? original
+                                    : "https://via.placeholder.com/300";
+                              }
+                            }}
+                          />
                         </Dot>
                         {currentProduct.variationThumbnail1 ? (
                           <Dot slide={1}>
-                            <Image src={currentProduct.variationThumbnail1} />
+                            <Image
+                              src={currentProduct.variationThumbnail1}
+                              onError={(e) => {
+                                if (!e.target.dataset.fallbackAttempted) {
+                                  e.target.dataset.fallbackAttempted = "true";
+                                  const original = e.target.src.replace(
+                                    /-\d+x\d+(\.\w+)$/,
+                                    "$1"
+                                  );
+                                  e.target.src =
+                                    original !== e.target.src
+                                      ? original
+                                      : "https://via.placeholder.com/300";
+                                }
+                              }}
+                            />
                           </Dot>
                         ) : null}
                         {currentProduct.variationThumbnail2 ? (
                           <Dot slide={2}>
-                            <Image src={currentProduct.variationThumbnail2} />
+                            <Image
+                              src={currentProduct.variationThumbnail2}
+                              onError={(e) => {
+                                if (!e.target.dataset.fallbackAttempted) {
+                                  e.target.dataset.fallbackAttempted = "true";
+                                  const original = e.target.src.replace(
+                                    /-\d+x\d+(\.\w+)$/,
+                                    "$1"
+                                  );
+                                  e.target.src =
+                                    original !== e.target.src
+                                      ? original
+                                      : "https://via.placeholder.com/300";
+                                }
+                              }}
+                            />
                           </Dot>
                         ) : null}
                       </div>
@@ -152,13 +197,41 @@ const ProductDetails = () => {
                     <div className="col-md-9">
                       <Slider>
                         <Slide index={0}>
-                          <ImageWithZoom src={currentProduct.primaryImage} />
+                          <ImageWithZoom
+                            src={currentProduct.primaryImage}
+                            onError={(e) => {
+                              if (!e.target.dataset.fallbackAttempted) {
+                                e.target.dataset.fallbackAttempted = "true";
+                                const original = e.target.src.replace(
+                                  /-\d+x\d+(\.\w+)$/,
+                                  "$1"
+                                );
+                                e.target.src =
+                                  original !== e.target.src
+                                    ? original
+                                    : "https://via.placeholder.com/300";
+                              }
+                            }}
+                          />
                         </Slide>
                         {currentProduct.variationImage1 ? (
                           <Slide index={1}>
                             <ImageWithZoom
                               src={currentProduct.variationImage1}
                               alt={currentProduct.name}
+                              onError={(e) => {
+                                if (!e.target.dataset.fallbackAttempted) {
+                                  e.target.dataset.fallbackAttempted = "true";
+                                  const original = e.target.src.replace(
+                                    /-\d+x\d+(\.\w+)$/,
+                                    "$1"
+                                  );
+                                  e.target.src =
+                                    original !== e.target.src
+                                      ? original
+                                      : "https://via.placeholder.com/300";
+                                }
+                              }}
                             />
                           </Slide>
                         ) : null}
@@ -167,6 +240,19 @@ const ProductDetails = () => {
                             <ImageWithZoom
                               src={currentProduct.variationImage2}
                               alt={currentProduct.name}
+                              onError={(e) => {
+                                if (!e.target.dataset.fallbackAttempted) {
+                                  e.target.dataset.fallbackAttempted = "true";
+                                  const original = e.target.src.replace(
+                                    /-\d+x\d+(\.\w+)$/,
+                                    "$1"
+                                  );
+                                  e.target.src =
+                                    original !== e.target.src
+                                      ? original
+                                      : "https://via.placeholder.com/300";
+                                }
+                              }}
                             />
                           </Slide>
                         ) : null}

@@ -109,7 +109,7 @@ function Checkout() {
                           </p>
                         </div>
                       </div>
-                      <div>${item.totalPrice.toFixed(2)}</div>
+                      <div>${parseFloat(item.totalPrice || 0).toFixed(2)}</div>
                     </div>
                   </div>
                 </div>
@@ -127,7 +127,7 @@ function Checkout() {
                 Total cost
               </p>
               <p className="mb-0" style={{ fontWeight: "600" }}>
-                ${totalCost.toFixed(2)}
+                ${parseFloat(totalCost || 0).toFixed(2)}
               </p>
             </div>
           </div>

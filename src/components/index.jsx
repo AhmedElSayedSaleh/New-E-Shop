@@ -12,6 +12,7 @@ import Newsletter from "./Newsletter";
 import CartHeader from "./CartHeader";
 import GoBackLink from "./GoBackLink";
 import ScrollToTop from "./ScrollToTop";
+import FeaturedProducts from "./FeaturedProducts";
 
 export {
   Button,
@@ -28,4 +29,5 @@ export {
   CartHeader,
   GoBackLink,
   ScrollToTop,
+  FeaturedProducts,
 };
