@@ -1,9 +1,6 @@
 export { default as Home } from "./Home";
-export { default as Bags } from "./Bags";
-export { default as Shoes } from "./Shoes";
-export { default as Jewelry } from "./Jewelry";
 export { default as ProductDetails } from "./ProductDetails";
-export { default as ProductsList } from "./ProductsList";
+export { default as AllProducts } from "./AllProducts";
 export { default as NotFound } from "./NotFound";
 export { default as Cart } from "./cart/Cart";
 export { default as Checkout } from "./cart/Checkout";

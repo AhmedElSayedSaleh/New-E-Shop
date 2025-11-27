@@ -33,6 +33,8 @@ import {
 } from "../assets/images";
 
 import { fetchProducts } from "../store/slices/ProductsSlice";
+import { mapProduct } from "../utils/mapProduct";
+import { getProductById } from "../api/woocommerce";
 import { addToCart } from "../store/slices/CartSlice";
 import { auth } from "../firebase/firebase";
 
@@ -46,45 +48,33 @@ const ProductDetails = () => {
   const navigate = useNavigate();
 
   const { loading, error, data } = allProductsList;
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+  const [detailLoading, setDetailLoading] = useState(true);
+  const [detailError, setDetailError] = useState(null);
 
   useEffect(() => {
-    for (const category in data) {
-      data[category].map((item) =>
-        item.id === +id
-          ? setCurrentProduct({
-              brand: item.brand,
-              brandUrl: item.brand_url,
-              category: item.category,
-              codCountry: item.codCountry,
-              currency: item.currency,
-              rawPrice: item.raw_price,
-              discount: item.discount,
-              productId: item.id,
-              primaryImage: item.image_url,
-              isNew: item.is_new,
-              likesCount: item.likes_count,
-              model: item.model,
-              name: item.name,
-              currentPrice:
-                item.current_price !== null
-                  ? item.current_price
-                  : item.raw_price,
-              subcategory: item.subcategory,
-              url: item.url,
-              variationColor1: item.variation_0_color,
-              variationImage1: item.variation_0_image,
-              variationThumbnail1: item.variation_0_thumbnail,
-              variationColor2: item.variation_1_color,
-              variationImage2: item.variation_1_image,
-              variationThumbnail2: item.variation_1_thumbnail,
-            })
-          : null
-      );
-    }
-  }, [data, id]);
+    // fetch product details by id directly for reliable load
+    let mounted = true;
+    setDetailLoading(true);
+    setDetailError(null);
+    getProductById(id)
+      .then((res) => {
+        if (!mounted) return;
+        const normalized = mapProduct(res);
+        setCurrentProduct(normalized);
+      })
+      .catch((err) => {
+        if (!mounted) return;
+        setDetailError(err.message || "Failed to load product");
+      })
+      .finally(() => {
+        if (!mounted) return;
+        setDetailLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [id]);
 
   const handleAddToCart = useCallback(
     (product) => {
@@ -111,10 +101,10 @@ const ProductDetails = () => {
 
   return (
     <>
-      {loading ? (
+      {loading || detailLoading ? (
         <LoadingBox />
       ) : error ? (
-        <MessageBox>{error}</MessageBox>
+        <MessageBox>{error || detailError}</MessageBox>
       ) : Object.keys(currentProduct).length === 0 ? (
         <div
           className={
@@ -147,26 +137,16 @@ const ProductDetails = () => {
                         <Dot slide={0}>
                           <Image src={currentProduct.primaryImage} />
                         </Dot>
-                        <Dot
-                          slide={1}
-                          className={
-                            currentProduct.variationThumbnail1 === ""
-                              ? "d-none"
-                              : ""
-                          }
-                        >
-                          <Image src={currentProduct.variationThumbnail1} />
-                        </Dot>
-                        <Dot
-                          slide={2}
-                          className={
-                            currentProduct.variationThumbnail2 === ""
-                              ? "d-none"
-                              : ""
-                          }
-                        >
-                          <Image src={currentProduct.variationThumbnail2} />
-                        </Dot>
+                        {currentProduct.variationThumbnail1 ? (
+                          <Dot slide={1}>
+                            <Image src={currentProduct.variationThumbnail1} />
+                          </Dot>
+                        ) : null}
+                        {currentProduct.variationThumbnail2 ? (
+                          <Dot slide={2}>
+                            <Image src={currentProduct.variationThumbnail2} />
+                          </Dot>
+                        ) : null}
                       </div>
                     </div>
                     <div className="col-md-9">
@@ -174,32 +154,22 @@ const ProductDetails = () => {
                         <Slide index={0}>
                           <ImageWithZoom src={currentProduct.primaryImage} />
                         </Slide>
-                        <Slide
-                          index={1}
-                          className={
-                            currentProduct.variationThumbnail1 === ""
-                              ? "d-none"
-                              : ""
-                          }
-                        >
-                          <ImageWithZoom
-                            src={currentProduct.variationImage1}
-                            alt={currentProduct.name}
-                          />
-                        </Slide>
-                        <Slide
-                          index={2}
-                          className={
-                            currentProduct.variationThumbnail2 === ""
-                              ? "d-none"
-                              : ""
-                          }
-                        >
-                          <ImageWithZoom
-                            src={currentProduct.variationImage2}
-                            alt={currentProduct.name}
-                          />
-                        </Slide>
+                        {currentProduct.variationImage1 ? (
+                          <Slide index={1}>
+                            <ImageWithZoom
+                              src={currentProduct.variationImage1}
+                              alt={currentProduct.name}
+                            />
+                          </Slide>
+                        ) : null}
+                        {currentProduct.variationImage2 ? (
+                          <Slide index={2}>
+                            <ImageWithZoom
+                              src={currentProduct.variationImage2}
+                              alt={currentProduct.name}
+                            />
+                          </Slide>
+                        ) : null}
                       </Slider>
                     </div>
                   </div>

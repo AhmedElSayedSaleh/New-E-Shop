@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigationType } from "react-router-dom";
 function SmoothScroll({ children }) {
   const location = useLocation();

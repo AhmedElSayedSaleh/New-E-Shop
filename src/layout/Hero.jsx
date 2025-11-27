@@ -2,11 +2,8 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import {
   Home,
-  Bags,
-  Shoes,
-  Jewelry,
   ProductDetails,
-  ProductsList,
+  AllProducts,
   NotFound,
   Cart,
   Checkout,
@@ -28,11 +25,8 @@ const Hero = () => {
             <Route path={"*"} element={<NotFound />} />
 
             <Route path={"/"} element={<Home />} exact />
-            <Route path={"/bags"} element={<Bags />} />
-            <Route path={"/shoes"} element={<Shoes />} />
-            <Route path={"/jewelry"} element={<Jewelry />} />
+            <Route path={"/products"} element={<AllProducts />} />
             <Route path={"/category/:id"} element={<CategoryPage />} />
-            <Route path={"/products"} element={<ProductsList />} />
             <Route path={"/product/:id"} element={<ProductDetails />} />
             <Route path={"/cart"} element={<Cart />} />
             <Route

@@ -17,8 +17,10 @@ const ProductModal = ({ modalView }) => {
   const handleAddToCart = useCallback(
     (product) => {
       if (!isAuthorized) {
-        document.querySelector("#exampleModal").classList.remove("show");
-        document.querySelector(".modal-backdrop").remove();
+        const modalEl = document.querySelector("#exampleModal");
+        const backdrop = document.querySelector(".modal-backdrop");
+        if (modalEl) modalEl.classList.remove("show");
+        if (backdrop) backdrop.remove();
         navigate("/login");
         return;
       }
@@ -61,6 +63,7 @@ const ProductModal = ({ modalView }) => {
                   />
                 </div>
                 <img
+                  loading="lazy"
                   className={"w-100 product__head__img"}
                   src={modalView.primaryImage}
                   alt={modalView.name}
@@ -76,10 +79,12 @@ const ProductModal = ({ modalView }) => {
                       className={"product-modal__link"}
                       onClick={() => {
                         const body = document.body;
-                        document.querySelector(".modal-backdrop").remove();
+                        const backdrop =
+                          document.querySelector(".modal-backdrop");
+                        if (backdrop) backdrop.remove();
                         body.classList.remove("modal-open");
                         body.style.overflow = "auto";
-                        body.style.paddingRight = 0;
+                        body.style.paddingRight = "0";
                       }}
                       to={`/product/${modalView.productId}`}
                       aria-label="Close"

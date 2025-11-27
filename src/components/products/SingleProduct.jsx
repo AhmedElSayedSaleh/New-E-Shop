@@ -12,6 +12,7 @@ const SingleProduct = ({ product, modalHandle, modalView }) => {
         <div className={"single-product__head"}>
           <Link to={`/product/${product.productId}`}>
             <img
+              loading="lazy"
               className={"w-100 h-100 single-product__head__img"}
               src={product.primaryImage}
               alt={product.name}

@@ -14,13 +14,13 @@ const ColorSelect = ({ colorData }) => {
               value={colorData.variationColor1}
               className={"color-select__radio"}
             />
-            <img
-              className={
-                colorData.variationThumbnail1 === "" ? "" : "color-select__img"
-              }
-              src={colorData.variationThumbnail1}
-              alt=""
-            />
+            {colorData.variationThumbnail1 ? (
+              <img
+                className={"color-select__img"}
+                src={colorData.variationThumbnail1}
+                alt={colorData.variationColor1 || "variation"}
+              />
+            ) : null}
             <p className={"color-select__name"}>{colorData.variationColor1}</p>
           </label>
         </li>
@@ -33,13 +33,13 @@ const ColorSelect = ({ colorData }) => {
               value={colorData.variationColor2}
               className={"color-select__radio"}
             />
-            <img
-              className={
-                colorData.variationThumbnail2 === "" ? "" : "color-select__img"
-              }
-              src={colorData.variationThumbnail2}
-              alt=""
-            />
+            {colorData.variationThumbnail2 ? (
+              <img
+                className={"color-select__img"}
+                src={colorData.variationThumbnail2}
+                alt={colorData.variationColor2 || "variation"}
+              />
+            ) : null}
             <p className={"color-select__name"}>{colorData.variationColor2}</p>
           </label>
         </li>

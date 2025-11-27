@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import { BlackLogo, WhiteLogo } from "../assets/images";
-import { links } from "../utils/constants";
 import { Icon } from "../components";
+import MegaMenu from "../components/MegaMenu";
 import { fetchCategories } from "../store/slices/CategoriesSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { auth } from "../firebase/firebase";
@@ -27,46 +27,55 @@ const Header = () => {
   }, [dispatch]);
 
   const stickyHeaderFunc = () => {
-    window.addEventListener("scroll", () => {
-      if (
-        document.body.scrollTop > 30 ||
-        document.documentElement.scrollTop > 30
-      ) {
-        headerRef.current.classList.remove("home-nav");
-        headerRef.current.classList.add("sticky__header");
-        logoRef.current.src = BlackLogo;
-      } else {
-        if (pathname === "/") {
-          headerRef.current.classList.add("home-nav");
-          logoRef.current.src = WhiteLogo;
-        } else {
-          headerRef.current.classList.remove("home-nav");
-          logoRef.current.src = BlackLogo;
-        }
-        headerRef.current.classList.remove("sticky__header");
-      }
-    });
+    // kept for backward compatibility; logic moved to handleScroll used in effect
   };
 
-  const handleNavButtonClick = () => {
-    setMenuOpen(!menuOpen);
-
-    if (!menuOpen) {
-      mobileMenuRef.current.classList.add("mobile-menu--active");
-      document.body.style.overflow = "hidden";
-      headerRef.current.classList.add("bg-white");
+  const handleScroll = () => {
+    if (!headerRef.current || !logoRef.current) return;
+    if (
+      document.body.scrollTop > 30 ||
+      document.documentElement.scrollTop > 30
+    ) {
       headerRef.current.classList.remove("home-nav");
+      headerRef.current.classList.add("sticky__header");
       logoRef.current.src = BlackLogo;
     } else {
       if (pathname === "/") {
-        headerRef.current.classList.remove("bg-white");
         headerRef.current.classList.add("home-nav");
         logoRef.current.src = WhiteLogo;
       } else {
         headerRef.current.classList.remove("home-nav");
         logoRef.current.src = BlackLogo;
       }
-      mobileMenuRef.current.classList.remove("mobile-menu--active");
+      headerRef.current.classList.remove("sticky__header");
+    }
+  };
+
+  const handleNavButtonClick = () => {
+    setMenuOpen(!menuOpen);
+
+    if (!menuOpen) {
+      if (mobileMenuRef.current)
+        mobileMenuRef.current.classList.add("mobile-menu--active");
+      document.body.style.overflow = "hidden";
+      if (headerRef.current) {
+        headerRef.current.classList.add("bg-white");
+        headerRef.current.classList.remove("home-nav");
+      }
+      if (logoRef.current) logoRef.current.src = BlackLogo;
+    } else {
+      if (pathname === "/") {
+        if (headerRef.current) {
+          headerRef.current.classList.remove("bg-white");
+          headerRef.current.classList.add("home-nav");
+        }
+        if (logoRef.current) logoRef.current.src = WhiteLogo;
+      } else {
+        if (headerRef.current) headerRef.current.classList.remove("home-nav");
+        if (logoRef.current) logoRef.current.src = BlackLogo;
+      }
+      if (mobileMenuRef.current)
+        mobileMenuRef.current.classList.remove("mobile-menu--active");
       document.body.style.overflow = "auto";
     }
   };
@@ -84,21 +93,26 @@ const Header = () => {
 
   useEffect(() => {
     if (pathname === "/") {
-      headerRef.current.classList.remove("bg-white");
-      headerRef.current.classList.add("home-nav");
-      logoRef.current.src = WhiteLogo;
+      if (headerRef.current) {
+        headerRef.current.classList.remove("bg-white");
+        headerRef.current.classList.add("home-nav");
+      }
+      if (logoRef.current) logoRef.current.src = WhiteLogo;
     }
-    mobileMenuRef.current.classList.remove("mobile-menu--active");
+    if (mobileMenuRef.current)
+      mobileMenuRef.current.classList.remove("mobile-menu--active");
     document.body.style.overflow = "auto";
     setMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    stickyHeaderFunc();
+    // run once and attach scroll listener; cleanup on unmount
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener("scroll", stickyHeaderFunc);
+      window.removeEventListener("scroll", handleScroll);
     };
-  });
+  }, [pathname]);
 
   const logout = () => {
     signOut(auth).then(() => navigate("/login"));
@@ -106,8 +120,9 @@ const Header = () => {
 
   return (
     <header
-      className={`pt-3 border-bottom ${pathname === "/" ? "home-nav fixed-top border-bottom-0" : ""
-        }`}
+      className={`pt-3 border-bottom ${
+        pathname === "/" ? "home-nav fixed-top border-bottom-0" : ""
+      }`}
       ref={headerRef}
       style={{ height: "6rem" }}
     >
@@ -118,7 +133,7 @@ const Header = () => {
               <div className="col-6 col-lg-3 text-start menu__logo">
                 <Link
                   to="/"
-                //  onClick={closeMenu}
+                  //  onClick={closeMenu}
                 >
                   <img
                     src={pathname === "/" ? WhiteLogo : BlackLogo}
@@ -129,53 +144,30 @@ const Header = () => {
                   <span>One</span>Stop
                 </Link>
               </div>
-              <ul className="col-lg-6 mb-0 menu__links">
-                {categories && categories.length > 0 ? (
-                  categories.map((category) => (
-                    <li key={category.id}>
-                      <NavLink
-                        to={`/category/${category.id}`}
-                        className="px-5 menu__link"
-                        style={({ isActive }) =>
-                          isActive ? { color: "#fbb03b" } : null
-                        }
-                      >
-                        {category.name}
-                      </NavLink>
-                    </li>
-                  ))
-                ) : (
-                  // Fallback to static links if no categories fetched yet
-                  links.map((link) => {
-                    const { id, text, url } = link;
-                    return (
-                      <li key={id}>
-                        <NavLink
-                          to={url}
-                          className="px-5 menu__link"
-                          style={({ isActive }) =>
-                            isActive ? { color: "#fbb03b" } : null
-                          }
-                        >
-                          {text}
-                        </NavLink>
-                      </li>
-                    );
-                  })
-                )}
-              </ul>
+              <div className="col-lg-6 d-flex justify-content-center align-items-center gap-4">
+                <NavLink
+                  to="/products"
+                  className="products-link"
+                  style={({ isActive }) =>
+                    isActive ? { color: "#fbb03b" } : null
+                  }
+                >
+                  المنتجات
+                </NavLink>
+                <MegaMenu categories={categories} />
+              </div>
               <div className="col-6 col-lg-3 d-flex justify-content-end">
                 <Icon
                   icon="search"
                   size={"3rem"}
                   className={"mx-3 mx-lg-4 menu__icon"}
                   disableFill
-                // onClick={closeMenu}
+                  // onClick={closeMenu}
                 />
                 <Link
                   to="/cart"
                   className=" position-relative"
-                // onClick={closeMenu}
+                  // onClick={closeMenu}
                 >
                   <Icon
                     icon="cart"
@@ -195,8 +187,9 @@ const Header = () => {
                         <img
                           src={user.photoURL}
                           alt="user"
-                          className={`rounded-circle  ${user.isAuth ? "menu__icon--avatar" : null
-                            }`}
+                          className={`rounded-circle  ${
+                            user.isAuth ? "menu__icon--avatar" : null
+                          }`}
                           role="button"
                           style={{ width: "100%" }}
                         />
@@ -205,8 +198,9 @@ const Header = () => {
                       <Icon
                         icon="avatar"
                         size={"3rem"}
-                        className={`mx-3 mx-lg-4 menu__icon menu__icon--avatar--mobile ${user.isAuth ? "menu__icon--avatar" : null
-                          }`}
+                        className={`mx-3 mx-lg-4 menu__icon menu__icon--avatar--mobile ${
+                          user.isAuth ? "menu__icon--avatar" : null
+                        }`}
                         disableFill
                       />
                     )}
@@ -264,24 +258,30 @@ const Header = () => {
 
         <div className="mobile-menu main-scroll" ref={mobileMenuRef}>
           <ul className="w-100 h-100">
-            {links.map((link) => {
-              const { id, text, url } = link;
-              return (
-                <li key={id} className="my-5">
-                  <NavLink
-                    to={url}
-                    className="h3 menu__link"
-                    style={({ isActive }) =>
-                      isActive ? { color: "#fbb03b" } : null
-                    }
-                  // activeStyle={{ color: "#fbb03b" }}
-                  // onClick={closeMenu}
-                  >
-                    {text}
-                  </NavLink>
+            {categories && categories.length > 0 ? (
+              <>
+                <li className="my-3">
+                  <div className="h4 text-warning px-3">الأقسام</div>
                 </li>
-              );
-            })}
+                {categories.map((category) => (
+                  <li key={category.id} className="my-3">
+                    <NavLink
+                      to={`/category/${category.id}`}
+                      className="h5 menu__link px-3"
+                      style={({ isActive }) =>
+                        isActive ? { color: "#fbb03b" } : null
+                      }
+                    >
+                      {category.name}
+                    </NavLink>
+                  </li>
+                ))}
+              </>
+            ) : (
+              <li className="my-5 text-center text-muted">
+                جاري تحميل الأقسام...
+              </li>
+            )}
             <li>
               <div
                 data-bs-toggle="collapse"
@@ -294,8 +294,9 @@ const Header = () => {
                     <img
                       src={user.photoURL}
                       alt="user"
-                      className={`rounded-circle mx-3 mx-lg-4 ${user.isAuth ? "menu__icon--avatar" : null
-                        }`}
+                      className={`rounded-circle mx-3 mx-lg-4 ${
+                        user.isAuth ? "menu__icon--avatar" : null
+                      }`}
                       role="button"
                       style={{ width: "100%" }}
                     />
@@ -304,8 +305,9 @@ const Header = () => {
                   <Icon
                     icon="avatar"
                     size={"3rem"}
-                    className={`mx-3 mx-lg-4 menu__icon ${user.isAuth ? "menu__icon--avatar" : null
-                      }`}
+                    className={`mx-3 mx-lg-4 menu__icon ${
+                      user.isAuth ? "menu__icon--avatar" : null
+                    }`}
                     disableFill
                   />
                 )}

@@ -47,7 +47,11 @@ const Cart = () => {
                     >
                       <td className="grid-product">
                         <div className="d-flex align-items-center">
-                          <img src={item.primaryImage} alt={item.name} />
+                          <img
+                            loading="lazy"
+                            src={item.primaryImage}
+                            alt={item.name}
+                          />
                           <div className="text-start ps-5">
                             <h4>{item.name}</h4>
                             <p className="cart__table__body__row__id">
